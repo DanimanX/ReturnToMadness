@@ -55,8 +55,7 @@ there, and in the end it returns you to the beginning.
 ## Play it
 
 Grab a build from [Releases](https://github.com/DanimanX/ReturnToMadness/releases):
-Linux, Windows and Web. macOS can be exported from the editor with the `macOS` preset
-(the CI job is wired up, but the GitHub runner hangs while importing assets).
+Linux, Windows, macOS and Web.
 
 > **Web build: it must be served over HTTP.** Browsers forbid a `file://` page from
 > reading the game files (`index.wasm`, `index.pck`), so double-clicking `index.html`
@@ -96,7 +95,7 @@ chmod +x regreso-a-la-locura.x86_64
 | `Enter` | Confirm |
 | `←` `→` | Change language (title screen or pause) |
 
-Gamepads work too (left stick, `A` jump, `X` strike, `B` dodge, `Y` The Voice).
+Gamepads work too (left stick or D-pad, `A` jump, `X` strike, `B` dodge, `Y` The Voice, `Start` confirm / pause — including 8BitDo Wukong / Ultimate 2C controllers).
 
 ---
 

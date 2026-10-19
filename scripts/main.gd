@@ -409,7 +409,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		_has_save = false
 		AudioDirector.sfx("menu", 0.0, -6.0)
 		return
-	if not event.is_action_pressed("ui_accept"):
+	if not event.is_action_pressed("confirm"):
 		return
 	match mode:
 		Mode.TITLE:

@@ -97,12 +97,29 @@ runs:
       run: |
         set -euo pipefail
         editor="${{ steps.paths.outputs.editor }}"
-        bin="$(dirname "$editor")"
-        base="$(basename "$editor")"
-        # en macOS el binario vive dentro del .app y está firmado: copiarlo lo
-        # invalida y el kernel lo mata. Un envoltorio no toca la firma.
-        if [ "$base" != "godot" ] && [ "$base" != "godot.exe" ]; then
-          printf '#!/bin/sh\nexec "%s" "$@"\n' "$editor" > "$bin/godot"
-          chmod +x "$bin/godot"
+        case "${{ runner.os }}" in
+          macOS)
+            # El binario vive dentro del .app firmado (Contents/MacOS/Godot) y
+            # APFS no distingue mayúsculas/minúsculas: escribir "$bin/godot"
+            # sobrescribiría el propio "Godot" con un envoltorio que se exec
+            # a sí mismo (bucle infinito, el job se cuelga). El envoltorio va a
+            # un directorio distinto y no toca la firma del bundle.
+            bin="$HOME/.local/bin"
+            mkdir -p "$bin"
+            printf '#!/bin/sh\nexec "%s" "$@"\n' "$editor" > "$bin/godot"
+            chmod +x "$bin/godot"
+            ;;
+          Windows)
+            # En Windows el ejecutable ya está en $RUNNER_TEMP/bin.
+            bin="$(dirname "$editor")"
+            ;;
+          *)
+            bin="$(dirname "$editor")"
+            ;;
+        esac
+        if [ -x "$bin/godot" ]; then
+          "$bin/godot" --version
+        else
+          "$bin/godot.exe" --version
         fi
         printf '%s\n' "$bin" >> "$GITHUB_PATH"

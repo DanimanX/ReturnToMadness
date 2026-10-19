@@ -155,9 +155,7 @@ jobs:
   macos:
     name: macOS
     runs-on: macos-latest
-    # macOS no debe bloquear la publicación de los otros tres binarios
-    timeout-minutes: 20
-    continue-on-error: true
+    timeout-minutes: 40
     needs: verify
     steps:
       - uses: actions/checkout@v4
@@ -216,9 +214,8 @@ jobs:
             **Descargas**
             - `regreso-a-la-locura-linux.zip` — Linux x86_64 (ejecutable único)
             - `regreso-a-la-locura-windows.zip` — Windows x86_64
+            - `RegresoALaLocura.zip` — macOS universal
             - `regreso-a-la-locura-web.zip` — Web (servir por HTTP)
-            - `RegresoALaLocura.zip` — macOS universal (solo si el runner lo consigue;
-              hoy suele quedarse bloqueado al importar)
 
             **Idiomas:** español, inglés, francés, portugués, italiano.
           files: dist/*.zip
