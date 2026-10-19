@@ -43,6 +43,9 @@ jobs:
           fi
           echo "sin errores de compilación"
 
+      - name: Comprobar los cinco idiomas
+        run: python3 tools/check_lang.py
+
       - name: Recorrer la etapa 1 con el bot
         run: |
           set -e

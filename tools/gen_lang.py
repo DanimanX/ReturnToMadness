@@ -57,7 +57,6 @@ E = {
         "GODOT 4 · ARTE E AUDIO GENERATI"),
 
     # ------------------------------------------------------------------- hud
-    "ui.candles": ("CIRIOS", "CANDLES", "CIERGES", "VELAS", "CANDELE"),
     "ui.clarity": ("CORDURA", "SANITY", "RAISON", "SANIDADE", "RAGIONE"),
     "ui.madness": ("LOCURA", "MADNESS", "FOLIE", "LOUCURA", "FOLLIA"),
     "ui.paused": ("PAUSA", "PAUSED", "PAUSE", "PAUSA", "PAUSA"),
