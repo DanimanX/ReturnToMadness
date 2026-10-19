@@ -20,16 +20,21 @@ runs:
         case "${{ runner.os }}" in
           Linux)
             echo "editor=$HOME/.local/bin/godot" >> "$GITHUB_OUTPUT"
+            echo "cachedir=$HOME/.local/bin/godot" >> "$GITHUB_OUTPUT"
             echo "templates=$HOME/.local/share/godot/export_templates" >> "$GITHUB_OUTPUT"
             echo "archive=linux.x86_64" >> "$GITHUB_OUTPUT"
             ;;
           macOS)
-            echo "editor=$HOME/bin/godot" >> "$GITHUB_OUTPUT"
+            # el binario dentro del .app está firmado: sacarlo del bundle hace
+            # que el kernel lo mate (Killed: 9). Se usa el bundle tal cual.
+            echo "editor=$HOME/godot/Godot.app/Contents/MacOS/Godot" >> "$GITHUB_OUTPUT"
+            echo "cachedir=$HOME/godot" >> "$GITHUB_OUTPUT"
             echo "templates=$HOME/Library/Application Support/Godot/export_templates" >> "$GITHUB_OUTPUT"
             echo "archive=macos.universal" >> "$GITHUB_OUTPUT"
             ;;
           Windows)
             echo "editor=$RUNNER_TEMP/bin/godot.exe" >> "$GITHUB_OUTPUT"
+            echo "cachedir=$RUNNER_TEMP/bin" >> "$GITHUB_OUTPUT"
             echo "templates=$APPDATA/Godot/export_templates" >> "$GITHUB_OUTPUT"
             echo "archive=win64.exe" >> "$GITHUB_OUTPUT"
             ;;
@@ -39,9 +44,9 @@ runs:
       uses: actions/cache@v4
       with:
         path: |
-          ${{ steps.paths.outputs.editor }}
+          ${{ steps.paths.outputs.cachedir }}
           ${{ steps.paths.outputs.templates }}
-        key: godot-${{ inputs.version }}-${{ inputs.channel }}-${{ runner.os }}
+        key: godot-${{ inputs.version }}-${{ inputs.channel }}-${{ runner.os }}-v2
 
     - name: Descargar editor
       shell: bash
@@ -55,16 +60,19 @@ runs:
           echo "editor en caché"
           exit 0
         fi
-        mkdir -p "$(dirname "$editor")"
         url="https://github.com/godotengine/godot/releases/download/${version}-${channel}/Godot_v${version}-${channel}_${archive}.zip"
         echo "descargando $url"
         curl -fsSL -o "$RUNNER_TEMP/godot.zip" "$url"
         rm -rf "$RUNNER_TEMP/godot-editor"
+        mkdir -p "$RUNNER_TEMP/godot-editor"
         unzip -q "$RUNNER_TEMP/godot.zip" -d "$RUNNER_TEMP/godot-editor"
         if [ "${{ runner.os }}" = "macOS" ]; then
-          cp "$RUNNER_TEMP/godot-editor/Godot.app/Contents/MacOS/Godot" "$editor"
-          xattr -dr com.apple.quarantine "$editor" || true
+          mkdir -p "$HOME/godot"
+          rm -rf "$HOME/godot/Godot.app"
+          mv "$RUNNER_TEMP/godot-editor/Godot.app" "$HOME/godot/Godot.app"
+          xattr -dr com.apple.quarantine "$HOME/godot/Godot.app" || true
         else
+          mkdir -p "$(dirname "$editor")"
           found="$(find "$RUNNER_TEMP/godot-editor" -maxdepth 1 -type f -perm -u+x | head -1)"
           cp "$found" "$editor"
         fi
@@ -99,10 +107,10 @@ runs:
         editor="${{ steps.paths.outputs.editor }}"
         bin="$(dirname "$editor")"
         base="$(basename "$editor")"
-        if [ "$base" != "godot" ] && [ "$base" != "godot.exe" ]; then
-          cp "$editor" "$bin/godot"
-          chmod +x "$bin/godot"
-        fi
+        case "$base" in
+          godot|godot.exe) ;;
+          *) cp "$editor" "$bin/godot"; chmod +x "$bin/godot" ;;
+        esac
         printf '%s\n' "$bin" >> "$GITHUB_PATH"
         if [ -f "$bin/godot.exe" ]; then
           "$bin/godot.exe" --version
