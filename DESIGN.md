@@ -105,7 +105,18 @@ pulso de "respiración" en los bordes. A marea 6 el propio HUD se corrompe.
 
 ---
 
-## 7. Estructura técnica
+## 7. Idiomas
+
+Cinco lenguas: español, inglés, francés, portugués e italiano. Se eligen con **← →** en el
+título o en la pausa y se recuerdan entre partidas (`user://settings.cfg`).
+
+Reglas de traducción:
+- El tono es el mismo en las cinco: frases cortas, literarias, sin épica de videojuego.
+- Lo que se traduce es **todo** el texto del juego, incluidos los susurros de la locura.
+- Los nombres propios de Lovecraft no se traducen (Innsmouth, Miskatonic, R'lyeh, Cthulhu).
+- Si a una lengua le falta una cadena, `tools/gen_lang.py` falla y no escribe nada.
+
+## 8. Estructura técnica
 
 ```
 project.godot          autoloads: GameState, AudioDirector

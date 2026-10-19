@@ -445,6 +445,7 @@ func _process_traverse(delta: float) -> void:
 		return
 	if trav_t > 95.0:
 		_finish_traverse_stage(false)
+		return
 
 
 func _finish_traverse_stage(ok: bool) -> void:
@@ -469,6 +470,8 @@ func _finish_traverse_stage(ok: bool) -> void:
 		Engine.time_scale = 1.0
 		traversing = false
 		log_line("RECORRIDO (etapa suelta) terminado")
+		# sin ventana no hay frame_post_draw: hay que salir, no pasar a capturas
+		_finish()
 		return
 	if trav_stage >= 7:
 		Engine.time_scale = 1.0

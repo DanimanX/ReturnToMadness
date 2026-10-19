@@ -23,6 +23,7 @@ jobs:
   verify:
     name: Verificar
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
 
@@ -60,6 +61,7 @@ jobs:
   linux:
     name: Linux y Web
     runs-on: ubuntu-latest
+    timeout-minutes: 40
     needs: verify
     steps:
       - uses: actions/checkout@v4
@@ -109,6 +111,7 @@ jobs:
   windows:
     name: Windows
     runs-on: windows-latest
+    timeout-minutes: 40
     needs: verify
     defaults:
       run:
@@ -148,6 +151,7 @@ jobs:
   macos:
     name: macOS
     runs-on: macos-latest
+    timeout-minutes: 40
     needs: verify
     steps:
       - uses: actions/checkout@v4
