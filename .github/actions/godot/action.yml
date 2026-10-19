@@ -107,10 +107,12 @@ runs:
         editor="${{ steps.paths.outputs.editor }}"
         bin="$(dirname "$editor")"
         base="$(basename "$editor")"
-        case "$base" in
-          godot|godot.exe) ;;
-          *) cp "$editor" "$bin/godot"; chmod +x "$bin/godot" ;;
-        esac
+        # en macOS el binario vive dentro del .app y está firmado: copiarlo lo
+        # invalida y el kernel lo mata. Un envoltorio no toca la firma.
+        if [ "$base" != "godot" ] && [ "$base" != "godot.exe" ]; then
+          printf '#!/bin/sh\nexec "%s" "$@"\n' "$editor" > "$bin/godot"
+          chmod +x "$bin/godot"
+        fi
         printf '%s\n' "$bin" >> "$GITHUB_PATH"
         if [ -f "$bin/godot.exe" ]; then
           "$bin/godot.exe" --version
