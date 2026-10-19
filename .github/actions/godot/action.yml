@@ -1,0 +1,111 @@
+name: Instalar Godot
+description: Descarga el editor y las plantillas de exportación, con caché por versión y sistema.
+
+inputs:
+  version:
+    description: Versión de Godot (p. ej. 4.7.2)
+    required: true
+  channel:
+    description: Canal (stable, rc1...)
+    required: false
+    default: stable
+
+runs:
+  using: composite
+  steps:
+    - name: Resolver rutas
+      id: paths
+      shell: bash
+      run: |
+        case "${{ runner.os }}" in
+          Linux)
+            echo "editor=$HOME/.local/bin/godot" >> "$GITHUB_OUTPUT"
+            echo "templates=$HOME/.local/share/godot/export_templates" >> "$GITHUB_OUTPUT"
+            echo "archive=linux.x86_64" >> "$GITHUB_OUTPUT"
+            ;;
+          macOS)
+            echo "editor=$HOME/bin/godot" >> "$GITHUB_OUTPUT"
+            echo "templates=$HOME/Library/Application Support/Godot/export_templates" >> "$GITHUB_OUTPUT"
+            echo "archive=macos.universal" >> "$GITHUB_OUTPUT"
+            ;;
+          Windows)
+            echo "editor=$RUNNER_TEMP/bin/godot.exe" >> "$GITHUB_OUTPUT"
+            echo "templates=$APPDATA/Godot/export_templates" >> "$GITHUB_OUTPUT"
+            echo "archive=win64.exe" >> "$GITHUB_OUTPUT"
+            ;;
+        esac
+
+    - name: Caché
+      uses: actions/cache@v4
+      with:
+        path: |
+          ${{ steps.paths.outputs.editor }}
+          ${{ steps.paths.outputs.templates }}
+        key: godot-${{ inputs.version }}-${{ inputs.channel }}-${{ runner.os }}
+
+    - name: Descargar editor
+      shell: bash
+      run: |
+        set -euo pipefail
+        editor="${{ steps.paths.outputs.editor }}"
+        archive="${{ steps.paths.outputs.archive }}"
+        version="${{ inputs.version }}"
+        channel="${{ inputs.channel }}"
+        if [ -x "$editor" ]; then
+          echo "editor en caché"
+          exit 0
+        fi
+        mkdir -p "$(dirname "$editor")"
+        url="https://github.com/godotengine/godot/releases/download/${version}-${channel}/Godot_v${version}-${channel}_${archive}.zip"
+        echo "descargando $url"
+        curl -fsSL -o "$RUNNER_TEMP/godot.zip" "$url"
+        rm -rf "$RUNNER_TEMP/godot-editor"
+        unzip -q "$RUNNER_TEMP/godot.zip" -d "$RUNNER_TEMP/godot-editor"
+        if [ "${{ runner.os }}" = "macOS" ]; then
+          cp "$RUNNER_TEMP/godot-editor/Godot.app/Contents/MacOS/Godot" "$editor"
+          xattr -dr com.apple.quarantine "$editor" || true
+        else
+          found="$(find "$RUNNER_TEMP/godot-editor" -maxdepth 1 -type f -perm -u+x | head -1)"
+          cp "$found" "$editor"
+        fi
+        chmod +x "$editor"
+        "$editor" --version
+
+    - name: Descargar plantillas de exportación
+      shell: bash
+      run: |
+        set -euo pipefail
+        version="${{ inputs.version }}"
+        channel="${{ inputs.channel }}"
+        dir="${{ steps.paths.outputs.templates }}/${version}.${channel}"
+        if [ -d "$dir" ] && [ "$(ls -A "$dir" 2>/dev/null | wc -l)" -gt 20 ]; then
+          echo "plantillas en caché: $(ls "$dir" | wc -l) archivos"
+          exit 0
+        fi
+        url="https://github.com/godotengine/godot/releases/download/${version}-${channel}/Godot_v${version}-${channel}_export_templates.tpz"
+        echo "descargando $url"
+        curl -fsSL -o "$RUNNER_TEMP/templates.tpz" "$url"
+        rm -rf "$RUNNER_TEMP/tpl"
+        mkdir -p "$RUNNER_TEMP/tpl"
+        unzip -q "$RUNNER_TEMP/templates.tpz" -d "$RUNNER_TEMP/tpl"
+        mkdir -p "$dir"
+        cp -r "$RUNNER_TEMP/tpl/templates/." "$dir/"
+        echo "plantillas instaladas: $(ls "$dir" | wc -l) archivos"
+
+    - name: Dejar godot en el PATH
+      shell: bash
+      run: |
+        set -euo pipefail
+        editor="${{ steps.paths.outputs.editor }}"
+        bin="$(dirname "$editor")"
+        base="$(basename "$editor")"
+        if [ "$base" != "godot" ] && [ "$base" != "godot.exe" ]; then
+          cp "$editor" "$bin/godot"
+          chmod +x "$bin/godot"
+        fi
+        printf '%s\n' "$bin" >> "$GITHUB_PATH"
+        if [ -f "$bin/godot.exe" ]; then
+          "$bin/godot.exe" --version
+        else
+          "$bin/godot" --version
+        fi

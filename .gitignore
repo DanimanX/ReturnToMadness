@@ -1,0 +1,12 @@
+# Caché de importación de Godot (se regenera con --import)
+.godot/
+
+# Binarios exportados
+build/
+dist/
+
+# Sistema
+.DS_Store
+__pycache__/
+*.pyc
+.codewhale/

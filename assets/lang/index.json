@@ -1,0 +1,25 @@
+{
+ "languages": [
+  {
+   "code": "es",
+   "name": "ESPAÑOL"
+  },
+  {
+   "code": "en",
+   "name": "ENGLISH"
+  },
+  {
+   "code": "fr",
+   "name": "FRANÇAIS"
+  },
+  {
+   "code": "pt",
+   "name": "PORTUGUÊS"
+  },
+  {
+   "code": "it",
+   "name": "ITALIANO"
+  }
+ ],
+ "default": "es"
+}

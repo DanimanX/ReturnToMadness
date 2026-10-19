@@ -1,0 +1,211 @@
+name: Build
+
+# Compila el juego para Linux, Windows, macOS y Web.
+#   - push a main / pull request : compila y publica artefactos
+#   - tag v*                     : además crea una release con los cuatro binarios
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+env:
+  GODOT_VERSION: "4.7.2"
+  GODOT_CHANNEL: "stable"
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Verificar
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Instalar Godot
+        uses: ./.github/actions/godot
+        with:
+          version: ${{ env.GODOT_VERSION }}
+          channel: ${{ env.GODOT_CHANNEL }}
+
+      - name: Importar y compilar
+        run: |
+          set -e
+          godot --headless --path . --import > /tmp/import.log 2>&1 || true
+          if grep -qE "SCRIPT ERROR|Parse Error" /tmp/import.log; then
+            grep -E -A3 "SCRIPT ERROR|Parse Error" /tmp/import.log
+            echo "::error::el proyecto no compila"
+            exit 1
+          fi
+          echo "sin errores de compilación"
+
+      - name: Recorrer la etapa 1 con el bot
+        run: |
+          set -e
+          godot --headless --path . -- --smoke --traverse --invuln --stage=1 \
+            > /tmp/traverse.log 2>&1 || true
+          tr -d '\000' < /tmp/traverse.log | grep -E "RECORRIDO|RESULTADO" || true
+          if ! tr -d '\000' < /tmp/traverse.log | grep -q "ARENA"; then
+            echo "::error::el bot no completó la etapa 1"
+            exit 1
+          fi
+
+  linux:
+    name: Linux y Web
+    runs-on: ubuntu-latest
+    needs: verify
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Instalar Godot
+        uses: ./.github/actions/godot
+        with:
+          version: ${{ env.GODOT_VERSION }}
+          channel: ${{ env.GODOT_CHANNEL }}
+
+      - name: Importar recursos
+        run: godot --headless --path . --import
+
+      - name: Exportar Linux
+        run: |
+          mkdir -p build/linux
+          godot --headless --path . --export-release "Linux" \
+            build/linux/regreso-a-la-locura.x86_64
+          test -s build/linux/regreso-a-la-locura.x86_64
+
+      - name: Exportar Web
+        run: |
+          mkdir -p build/web
+          godot --headless --path . --export-release "Web" build/web/index.html
+          test -s build/web/index.html
+          test -s build/web/index.pck
+
+      - name: Empaquetar
+        run: |
+          cd build/linux
+          zip -q -9 ../regreso-a-la-locura-linux.zip regreso-a-la-locura.x86_64
+          cd ../web
+          zip -q -9 ../regreso-a-la-locura-web.zip ./*
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: linux
+          path: build/regreso-a-la-locura-linux.zip
+          if-no-files-found: error
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: web
+          path: build/regreso-a-la-locura-web.zip
+          if-no-files-found: error
+
+  windows:
+    name: Windows
+    runs-on: windows-latest
+    needs: verify
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Instalar Godot
+        uses: ./.github/actions/godot
+        with:
+          version: ${{ env.GODOT_VERSION }}
+          channel: ${{ env.GODOT_CHANNEL }}
+
+      - name: Importar recursos
+        run: godot --headless --path . --import
+
+      - name: Exportar Windows
+        run: |
+          mkdir -p build/windows
+          godot --headless --path . --export-release "Windows" \
+            build/windows/RegresoALaLocura.exe
+          test -s build/windows/RegresoALaLocura.exe
+
+      - name: Empaquetar
+        run: |
+          python - <<'PY'
+          import shutil
+          shutil.make_archive("build/regreso-a-la-locura-windows", "zip", "build/windows")
+          PY
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows
+          path: build/regreso-a-la-locura-windows.zip
+          if-no-files-found: error
+
+  macos:
+    name: macOS
+    runs-on: macos-latest
+    needs: verify
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Instalar Godot
+        uses: ./.github/actions/godot
+        with:
+          version: ${{ env.GODOT_VERSION }}
+          channel: ${{ env.GODOT_CHANNEL }}
+
+      - name: Importar recursos
+        run: godot --headless --path . --import
+
+      - name: Exportar macOS
+        run: |
+          mkdir -p build/macos
+          godot --headless --path . --export-release "macOS" \
+            build/macos/RegresoALaLocura.zip
+          test -s build/macos/RegresoALaLocura.zip
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: macos
+          path: build/macos/RegresoALaLocura.zip
+          if-no-files-found: error
+
+  release:
+    name: Publicar release
+    runs-on: ubuntu-latest
+    needs: [linux, windows, macos]
+    if: startsWith(github.ref, 'refs/tags/v')
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Reunir binarios
+        run: |
+          mkdir -p dist
+          cp artifacts/linux/*.zip dist/
+          cp artifacts/windows/*.zip dist/
+          cp artifacts/macos/*.zip dist/
+          cp artifacts/web/*.zip dist/
+          ls -la dist
+
+      - name: Crear release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Regreso a la Locura ${{ github.ref_name }}
+          body: |
+            Siete descensos. Una sola cordura.
+
+            **Descargas**
+            - `regreso-a-la-locura-linux.zip` — Linux x86_64 (ejecutable único)
+            - `regreso-a-la-locura-windows.zip` — Windows x86_64
+            - `RegresoALaLocura.zip` — macOS universal (sin firmar)
+            - `regreso-a-la-locura-web.zip` — Web (servir por HTTP)
+
+            **Idiomas:** español, inglés, francés, portugués, italiano.
+          files: dist/*.zip
+          draft: false
+          prerelease: false
