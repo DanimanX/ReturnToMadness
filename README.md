@@ -35,8 +35,9 @@ godot --path . --editor
 godot --path .
 ```
 
-Binarios ya compilados (GitHub Actions los genera para las cuatro plataformas):
-[Releases](https://github.com/DanimanX/ReturnToMadness/releases).
+Binarios ya compilados en [Releases](https://github.com/DanimanX/ReturnToMadness/releases):
+Linux, Windows y Web. macOS se puede exportar desde el editor con el preset `macOS`
+(el job de CI está preparado pero el runner de GitHub se bloquea al importar).
 
 En Linux con el binario descargado:
 
