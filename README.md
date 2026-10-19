@@ -1,232 +1,273 @@
-# REGRESO A LA LOCURA
+# REGRESO A LA LOCURA — Return to Madness
 
-**Action-platformer de horror cósmico en pixel art · Godot 4 · 7 etapas**
-**por DanimanX**
+<p align="center">
+  <strong>Cosmic-horror action platformer · pixel art · Godot 4 · 7 stages · 5 languages</strong><br>
+  <strong>by DanimanX</strong>
+</p>
 
-[![Build](https://github.com/DanimanX/ReturnToMadness/actions/workflows/build.yml/badge.svg)](https://github.com/DanimanX/ReturnToMadness/actions/workflows/build.yml)
-[![Idiomas](https://img.shields.io/badge/idiomas-ES%20%C2%B7%20EN%20%C2%B7%20FR%20%C2%B7%20PT%20%C2%B7%20IT-8a6bbf)]()
+<p align="center">
+  <a href="https://github.com/DanimanX/ReturnToMadness/actions/workflows/build.yml">
+    <img src="https://github.com/DanimanX/ReturnToMadness/actions/workflows/build.yml/badge.svg" alt="Build">
+  </a>
+  <img src="https://img.shields.io/badge/languages-ES%20%C2%B7%20EN%20%C2%B7%20FR%20%C2%B7%20PT%20%C2%B7%20IT-8a6bbf" alt="Languages">
+  <img src="https://img.shields.io/badge/engine-Godot%204.7-478CBF?logo=godotengine&logoColor=white" alt="Godot 4.7">
+</p>
 
-[![Video promocional](promo/poster.png)](promo/regreso-a-la-locura-promo.mp4)
+<p align="center">
+  <a href="promo/return-to-madness-promo.mp4">
+    <img src="promo/poster.png" alt="Return to Madness — seven descents into the dream of Cthulhu" width="950">
+  </a>
+</p>
 
-▶ **[Ver el video promocional](promo/regreso-a-la-locura-promo.mp4)** (51 s, 1080p)
+<p align="center">
+  <em>▶ Watch the 1080p promo — <a href="promo/return-to-madness-promo.mp4">English</a> · <a href="promo/regreso-a-la-locura-promo.mp4">Español</a></em>
+</p>
 
-Descarga los binarios desde [Releases](https://github.com/DanimanX/ReturnToMadness/releases):
-Linux, Windows, macOS y Web.
+<p align="center">
+  Regreso a la Locura is free. If it earns a place in your library and you
+  feel like saying thanks, you can buy me a coffee — completely optional.
+</p>
 
-> *"No fue la muerte lo que me reclamó, sino la certeza de que ya había estado aquí."*
+<p align="center">
+  <a href="https://paypal.me/DanimanX?locale.x=en_US&amp;country.x=CL">
+    <img src="https://img.shields.io/badge/Donate-PayPal-00457C?logo=paypal&amp;logoColor=white&amp;style=for-the-badge" alt="Donate with PayPal">
+  </a>
+</p>
 
-Eres **el Testigo**, último acólito de la Orden del Ojo Abierto, y desciendes por las siete
-capas del sueño de Cthulhu para volver a cerrar los sellos que alguien está abriendo desde
-dentro. Cada capa que cruzas te arranca un trozo de cordura, y la locura que acumulas
-**no se cura nunca**: te hace pegar más fuerte, te hace ver horrores que no existen y, al
-final, te devuelve al principio.
-
-**Duración:** ~20–40 minutos por partida · **Guardado:** en los altares.
+<p align="center">
+  <sub><a href="https://paypal.me/DanimanX?locale.x=en_US&amp;country.x=CL">paypal.me/DanimanX</a></sub>
+</p>
 
 ---
 
-## Cómo jugar
+> *"It was not death that claimed me, but the certainty that I had been here before."*
+
+You are **the Witness**, last acolyte of the Order of the Open Eye, descending through the
+seven layers of Cthulhu's dream to seal again the seals that someone is opening from the
+inside. Every layer you cross tears away a piece of your sanity, and the madness you
+accumulate **never heals**: it makes you hit harder, makes you see horrors that are not
+there, and in the end it returns you to the beginning.
+
+**Playtime:** ~20–40 minutes per run · **Saving:** at the altars.
+
+---
+
+## Play it
+
+Grab a build from [Releases](https://github.com/DanimanX/ReturnToMadness/releases):
+Linux, Windows and Web. macOS can be exported from the editor with the `macOS` preset
+(the CI job is wired up, but the GitHub runner hangs while importing assets).
 
 ```bash
-# 1. Abrir el proyecto en Godot 4.7+
+# Open the project in Godot 4.7+
 godot --path . --editor
 
-# 2. O jugar directamente
+# Or play it directly
 godot --path .
 ```
 
-Binarios ya compilados en [Releases](https://github.com/DanimanX/ReturnToMadness/releases):
-Linux, Windows y Web. macOS se puede exportar desde el editor con el preset `macOS`
-(el job de CI está preparado pero el runner de GitHub se bloquea al importar).
-
-En Linux con el binario descargado:
+Linux, from the downloaded build:
 
 ```bash
-./Godot_v4.7.2-stable_linux.x86_64 --path /ruta/a/ReturnToMadness
+unzip regreso-a-la-locura-linux.zip
+chmod +x regreso-a-la-locura.x86_64
+./regreso-a-la-locura.x86_64
 ```
 
-| Tecla | Acción |
-|-------|--------|
-| `A` / `D` o flechas | Moverse |
-| `Espacio` | Saltar (mantener = salto más alto) |
-| `J` o clic izquierdo | Golpear — combo de 3 |
-| `K` | Esquivar (invulnerable, atraviesa proyectiles) |
-| `L` | **La Voz**: grito que aturde y empuja, cuesta cordura |
-| `E` | Interactuar |
-| `Esc` | Pausa / controles |
-| `Enter` | Confirmar |
+| Key | Action |
+|-----|--------|
+| `A` / `D` or arrows | Move |
+| `Space` | Jump (hold for a higher jump) |
+| `J` or left click | Strike — 3-hit combo |
+| `K` | Dodge (invulnerable, passes through projectiles) |
+| `L` | **The Voice**: a scream that stuns and pushes, costs sanity |
+| `E` | Interact |
+| `Esc` | Pause / controls |
+| `Enter` | Confirm |
+| `←` `→` | Change language (title screen or pause) |
 
-También funciona con mando (stick izquierdo, `A` saltar, `X` golpear, `B` esquivar, `Y` La Voz).
-
----
-
-## Idiomas
-
-El juego está en **cinco idiomas**: español, inglés, francés, portugués e italiano.
-
-En la pantalla de título o en la pausa, cambia con **← →**. La elección se guarda en
-`user://settings.cfg` y se mantiene entre partidas. Al arrancar por primera vez se intenta
-usar el idioma del sistema.
-
-Se traduce **todo**: títulos de etapa, intros, fragmentos de lore, revelaciones, nombres de
-los guardianes, susurros de la locura, HUD, menús y el final.
-
-Los textos viven en `assets/lang/{es,en,fr,pt,it}.json` y se generan desde
-`tools/gen_lang.py`, que falla si a alguna lengua le falta una cadena.
+Gamepads work too (left stick, `A` jump, `X` strike, `B` dodge, `Y` The Voice).
 
 ---
 
-## Video promocional
+## Languages
 
-El video se genera desde el propio juego, no se edita a mano:
+The game ships in **five languages**: Spanish, English, French, Portuguese and Italian.
+
+Switch with **← →** on the title screen or in the pause menu. The choice is stored in
+`user://settings.cfg` and survives between runs; on first launch it tries to match your
+system language.
+
+**Everything** is translated: stage names, intros, lore fragments, revelations, boss names,
+the whispers of madness, HUD, menus and the ending.
+
+Texts live in `assets/lang/{es,en,fr,pt,it}.json`, generated by `tools/gen_lang.py`,
+which refuses to write if any language is missing a string.
+`tools/check_lang.py` verifies the same thing in CI.
+
+---
+
+## Promo videos
+
+The videos are generated from the game itself — nothing is edited by hand:
 
 ```bash
-bash tools/gen_promo.sh
+bash tools/gen_promo.sh                  # Spanish
+LANG_CODE=en bash tools/gen_promo.sh     # English (also fr, pt, it)
 ```
 
-1. Godot graba la partida a resolución nativa (480×270, sin pérdidas) con `--write-movie`.
-2. `tools/gen_promo_audio.py` alinea la banda sonora a los cortes reales del montaje.
-3. `ffmpeg` escala ×4 con vecino más cercano y codifica H.264 a 1080p.
+1. Godot records the run at native resolution (480×270, lossless) with `--write-movie`.
+2. `tools/gen_promo_audio.py` aligns the soundtrack to the real cut points.
+3. `ffmpeg` scales ×4 with nearest-neighbour and encodes H.264 at 1080p.
 
-Resultado: `promo/regreso-a-la-locura-promo.mp4`.
-
----
-
-## Las dos barras
-
-**Cordura** (0–100, por etapa) baja al recibir daño, al estar cerca de horrores y en la
-oscuridad. Si llega a cero, el Testigo grita, pierde un cirio y la locura sube. Se recupera
-en los **altares** (que son puntos de guardado) y al matar.
-
-**Locura** (0–7, permanente) sube al avanzar, al matar y al morir. Nunca baja:
-
-- daño que infliges: **×(1 + 0.13 · locura)**
-- daño que recibes: **×(1 + 0.09 · locura)**
-- los enemigos te detectan antes y aparecen espectros que no existen
-
-| Marea | Nombre | Qué cambia |
-|-------|--------|-----------|
-| 0 | Testigo | nada |
-| 1 | Primer susurro | viñeta, susurros |
-| 2 | Grieta | aberración cromática, alucinaciones |
-| 3 | Voz | onda de pantalla, HUD que tiembla |
-| 4 | Vórtice | *drift* de control, ojos en el fondo |
-| 5 | Coro | siluetas duplicadas, susurros constantes |
-| 6 | Durmiente | todo respira, el ojo te sigue |
-| 7 | Regreso | el juego se reinicia con el mundo deformado |
+Output: `promo/return-to-madness-promo.mp4` (English) and
+`promo/regreso-a-la-locura-promo.mp4` (Spanish).
 
 ---
 
-## Las siete etapas
+## The two bars
 
-1. **La Costa Ahogada** — Innsmouth bajo la lluvia · *El Sacerdote Ahogado*
-2. **Las Criptas de Dagon** — catacumbas inundadas · *La Madre de Branquias*
-3. **El Ala Prohibida** — Biblioteca Miskatonic · *El Bibliotecario*
-4. **La Meseta de Leng** — hielo y luna de Kadath · *El Cazador de la Luna*
-5. **El Abismo de Yuggoth** — ciudad-máquina fúngica · *El Ingeniero Mi-Go*
-6. **El Sueño de R'lyeh** — geometría imposible · *El Yo Que No Fui*
-7. **El Trono del Durmiente** — la cámara del sueño · *Cthulhu*
+**Sanity** (0–100, per stage) drops when you take damage, when you stand near horrors and
+in the dark. At zero the Witness screams, loses a candle and madness rises. It recovers at
+the **altars** (which are also save points) and by killing.
 
-Cada etapa tiene un altar (guardado), fragmentos de lore opcionales y un guardián de tres
-fases al final. Detrás de la puerta, una revelación.
+**Madness** (0–7, permanent) rises as you advance, as you kill and as you die. It never
+goes down:
+
+- damage you deal: **×(1 + 0.13 · madness)**
+- damage you take: **×(1 + 0.09 · madness)**
+- enemies notice you sooner, and spectres that are not there begin to appear
+
+| Tide | Name | What changes |
+|------|------|--------------|
+| 0 | Witness | nothing |
+| 1 | First whisper | vignette, whispers |
+| 2 | Crack | chromatic aberration, hallucinations |
+| 3 | Voice | screen warp, trembling HUD |
+| 4 | Vortex | control drift, eyes in the background |
+| 5 | Choir | duplicated silhouettes, constant whispers |
+| 6 | Sleeper | everything breathes, the eye follows you |
+| 7 | Return | the game restarts with a deformed world |
 
 ---
 
-## Estructura del proyecto
+## The seven stages
+
+1. **The Drowned Coast** — Innsmouth in the rain · *The Drowned Priest*
+2. **The Crypts of Dagon** — flooded catacombs · *The Gilled Mother*
+3. **The Forbidden Wing** — Miskatonic Library · *The Librarian*
+4. **The Plateau of Leng** — ice and the moon of Kadath · *The Moon Hunter*
+5. **The Abyss of Yuggoth** — fungal machine-city · *The Mi-Go Engineer*
+6. **The Dream of R'lyeh** — impossible geometry · *The Self I Never Was*
+7. **The Throne of the Sleeper** — the dreaming chamber · *Cthulhu*
+
+Each stage has an altar (save point), optional lore fragments and a three-phase guardian
+at the end. Behind the door, a revelation.
+
+---
+
+## Project layout
 
 ```
-project.godot              autoloads: GameState, AudioDirector
-scenes/main.tscn           única escena raíz; todo lo demás se construye en código
-data/stages.gd             las 7 etapas como mapas ASCII + lore (generado, editable)
+project.godot              autoloads: GameState, I18n, AudioDirector
+scenes/main.tscn           single root scene; everything else is built in code
+data/stages.gd             the 7 stages as ASCII maps (generated, editable)
 scripts/
-  main.gd                  flujo: título, etapas, muerte, revelación, bucle
-  game_state.gd            locura, cordura, cirios, guardado
-  level.gd                 parsea el mapa, autotile, colisión, props, entidades
-  player.gd                movimiento, combo, esquiva, La Voz
-  enemy.gd                 cinco criaturas con comportamiento propio
-  boss.gd                  siete guardianes, tres fases, patrones
-  tentacle.gd              tentáculo que brota y se retira
-  hud.gd                   cirios, cordura, locura, barra de jefe, susurros
-  madness_fx.gd            post-proceso y alucinaciones
-  pixel_font.gd            tipografía 5x7 dibujada desde atlas
-  smoke.gd / bot.gd        arnés de verificación (ver abajo)
-shaders/madness.gdshader   aberración, onda, viñeta, grano, escaneo, tinte
-assets/                    sprites, tiles, fondos, ui, audio (todo generado)
-tools/                     generadores de arte, audio y niveles
+  main.gd                  flow: title, stages, death, revelation, loop
+  game_state.gd            madness, sanity, candles, save file
+  i18n.gd                  5-language lookup with Spanish fallback
+  level.gd                 parses the map, autotiles, collision, props, entities
+  player.gd                movement, combo, dodge, The Voice
+  enemy.gd                 five creatures with their own behaviour
+  boss.gd                  seven guardians, three phases, patterns
+  tentacle.gd              tentacle that bursts out and retracts
+  hud.gd                   candles, sanity, madness, boss bar, whispers
+  madness_fx.gd            post-processing and hallucinations
+  pixel_font.gd            5x7 bitmap font drawn from an atlas
+  smoke.gd / bot.gd        verification harness (see below)
+shaders/madness.gdshader   aberration, warp, vignette, grain, scanlines, tint
+assets/                    sprites, tiles, backgrounds, ui, audio (all generated)
+assets/lang/               five languages as JSON
+tools/                     generators for art, audio, levels, text and video
+promo/                     promo videos generated from the game
+.github/workflows/build.yml  CI: Linux, Windows, macOS, Web + release
 ```
 
-### Los niveles son texto
+### Levels are text
 
-Una etapa es un mapa ASCII de 17 filas en `data/stages.gd`:
+A stage is a 17-row ASCII map in `data/stages.gd`:
 
 ```
-"...................",   .  vacío        P  inicio        A  altar (guardado)
-"..###.......###....",   #  sólido       X  puerta        b  fragmento de lore
-"..###..^....###....",   =  plataforma   B  jefe          t  antorcha
-"#########..########",   ^  pinchos      s  estatua       :  cadena
-                         ~  agua         1 ahogado  2 cultista  3 pólipo
-                                        4 bestia   5 Mi-Go    T tentáculo
+"...................",   .  empty          P  start          A  altar (save)
+"..###.......###....",   #  solid          X  gate           b  lore fragment
+"..###..^....###....",   =  platform       B  boss           t  torch
+"#########..########",   ^  spikes         s  statue         :  chain
+                         ~  water          1 drowned  2 cultist  3 polyp
+                                          4 beast    5 Mi-Go    T tentacle
 ```
 
-Reglas que respeta el generador: ningún salto supera 4 tiles horizontales ni 3 de altura.
+Rules the generator enforces: no jump exceeds 4 tiles horizontally or 3 tiles vertically.
 
 ---
 
-## Generar el arte, el audio y los niveles
+## Regenerating the content
 
-Todo el contenido es procedural y reproducible:
+All content is procedural and reproducible:
 
 ```bash
-python3 tools/gen_player.py     # el Testigo: 28 frames
-python3 tools/gen_enemies.py    # 5 criaturas + 7 jefes + espectro
-python3 tools/gen_world.py      # 6 atlas de tiles + props
-python3 tools/gen_bg.py         # 7 etapas × 2 capas de parallax
-python3 tools/gen_ui.py         # tipografía, cirios, ojo, logo
-python3 tools/gen_audio.py      # 7 ambientes, música de jefe, 12 efectos
-python3 tools/gen_stages.py     # los 7 mapas ASCII + validación
+python3 tools/gen_player.py     # the Witness: 28 frames
+python3 tools/gen_enemies.py    # 5 creatures + 7 bosses + spectre
+python3 tools/gen_world.py      # 6 tile atlases + props
+python3 tools/gen_bg.py         # 7 stages × 2 parallax layers
+python3 tools/gen_ui.py         # font, candles, eye, logo
+python3 tools/gen_audio.py      # 7 ambiences, boss music, 12 effects
+python3 tools/gen_lang.py       # the 5 language files
+python3 tools/gen_stages.py     # the 7 ASCII maps + validation
 ```
 
-`gen_stages.py` **valida** cada etapa: si un salto es imposible o un marcador flota, falla y
-no escribe el archivo.
+`gen_stages.py` **validates** every stage: if a jump is impossible or a marker floats, it
+fails and writes nothing.
 
 ---
 
-## Verificación
+## Verification
 
-El proyecto incluye un arnés que juega solo. No es una demo: es el test de regresión.
+The project ships with a harness that plays itself. It is not a demo: it is the regression
+test.
 
 ```bash
-# capturas guiadas en /tmp/shots (título, etapa 1, locura 6, biblioteca, Cthulhu)
+# guided screenshots in /tmp/shots (title, stage 1, madness 6, library, Cthulhu)
 godot --path . -- --smoke
 
-# ¿se puede recorrer la etapa N de principio a fin? (bot que salta, pega y esquiva)
+# can stage N be traversed end to end? (bot that jumps, hits and dodges)
 godot --headless --path . -- --smoke --traverse --invuln --stage=1
 
-# ¿el jefe muere y la puerta cierra la etapa? (duelo + ciclo completo)
+# does the boss die and the gate close the stage? (duel + full loop)
 godot --headless --path . -- --smoke --bosstest --stage=1
 ```
 
-Resultados medidos en esta máquina (Godot 4.7.2, Linux, sin GPU dedicada):
+Measured on this machine (Godot 4.7.2, Linux, no dedicated GPU):
 
-- **Geometría**: las 7 etapas se recorren de principio a fin sin quedarse atascado.
-  Tiempos del bot: 22 s, 27 s, 33 s, 32 s, 66 s, 38 s, 36 s (a ×2.5 de velocidad).
-- **Combate**: los 7 guardianes mueren y la puerta completa la etapa, subiendo la locura
-  de 0.8 a 7.0 a lo largo de la partida.
-- **Estructura**: `gen_stages.py` valida saltos y apoyos antes de escribir `data/stages.gd`.
+- **Geometry**: all 7 stages are traversable end to end without getting stuck.
+  Bot times: 22 s, 27 s, 33 s, 32 s, 66 s, 38 s, 36 s (at ×2.5 speed).
+- **Combat**: all 7 guardians die and the gate completes the stage, raising madness from
+  0.8 to 7.0 across a full run.
+- **Structure**: `gen_stages.py` validates jumps and footholds before writing
+  `data/stages.gd`; `check_lang.py` validates all five languages in CI.
 
-El modo `--invuln` existe porque el bot no es una IA de combate: sirve para medir
-geometría sin que las peleas contaminen el resultado.
+The `--invuln` mode exists because the bot is not a combat AI: it isolates geometry from
+fights.
 
 ---
 
-## Créditos
+## Credits
 
-**Un juego de DanimanX.**
+**A game by DanimanX.**
 
-Código, arte y audio generados para este proyecto. El universo de Cthulhu es de
-**H. P. Lovecraft** y es de dominio público; los nombres propios se usan como homenaje.
-Inspirado en la sensación de *Blasphemous* (The Game Kitchen).
+Code, art and audio generated for this project. The Cthulhu mythos belongs to
+**H. P. Lovecraft** and is in the public domain; proper names are used as homage.
+Inspired by the feel of *Blasphemous* (The Game Kitchen).
 
-Sin licencia declarada: todos los derechos reservados por el autor. Si quieres que sea
-software libre, añade un `LICENSE` (MIT, GPL-3.0 o CC-BY para el arte) — es la única
-decisión de publicación que queda abierta.
+No license declared: all rights reserved by the author. If you want it to be free
+software, add a `LICENSE` (MIT, GPL-3.0, or CC-BY for the art) — that is the only
+publishing decision still open.

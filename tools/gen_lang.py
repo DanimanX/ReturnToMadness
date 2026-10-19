@@ -49,6 +49,27 @@ E = {
         "OU SUPPR POUR RECOMMENCER",
         "OU PRESSIONA DELETE PARA RECOMEÇAR",
         "OPPURE PREMI CANC PER RICOMINCIARE"),
+    "promo.made_by": (
+        "Un juego de DanimanX", "A game by DanimanX", "Un jeu de DanimanX",
+        "Um jogo de DanimanX", "Un gioco di DanimanX"),
+    "promo.tagline": (
+        "Siete descensos.\nUna sola cordura.",
+        "Seven descents.\nOne single sanity.",
+        "Sept descentes.\nUne seule raison.",
+        "Sete descensos.\nUma só sanidade.",
+        "Sette discese.\nUna sola ragione."),
+    "promo.built": (
+        "Godot 4\nArte, audio y niveles generados",
+        "Godot 4\nArt, audio and levels generated",
+        "Godot 4\nArt, audio et niveaux générés",
+        "Godot 4\nArte, áudio e níveis gerados",
+        "Godot 4\nArte, audio e livelli generati"),
+    "promo.langs": (
+        "ESPAÑOL · ENGLISH\nFRANÇAIS · PORTUGUÊS · ITALIANO",
+        "SPANISH · ENGLISH\nFRENCH · PORTUGUESE · ITALIAN",
+        "ESPAGNOL · ANGLAIS\nFRANÇAIS · PORTUGAIS · ITALIEN",
+        "ESPANHOL · INGLÊS\nFRANCÊS · PORTUGUÊS · ITALIANO",
+        "SPAGNOLO · INGLESE\nFRANCESE · PORTOGHESE · ITALIANO"),
     "app.credit": (
         "GODOT 4 · ARTE Y AUDIO GENERADOS",
         "GODOT 4 · ART AND AUDIO GENERATED",

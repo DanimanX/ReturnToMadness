@@ -146,12 +146,17 @@ const PROMO := [
 var _promo_i: int = -1
 var _promo_t: float = 0.0
 var _promo_frames: int = 0
+var _promo_lang: String = "es"
 
 
 func _promo_start() -> void:
 	promo_mode = true
 	trav_only = 0
-	I18n.set_language("es", false)
+	for a in OS.get_cmdline_user_args():
+		if a.begins_with("--lang="):
+			_promo_lang = a.split("=")[1]
+	I18n.set_language(_promo_lang, false)
+	log_line("promo en idioma: %s (%s)" % [_promo_lang, I18n.native_name()])
 	main.hud.quiet = true
 	main._enter_title()
 	_promo_advance()
@@ -180,10 +185,11 @@ func _promo_advance() -> void:
 		"boss":
 			_promo_boss(int(beat["stage"]))
 		"card":
-			main.promo_card("REGRESO A LA LOCURA",
-					"Un juego de DanimanX\n\nSiete descensos.\nUna sola cordura.\n\n"
-					+ "Godot 4\nArte, audio y niveles generados\n\n"
-					+ "ESPAÑOL · ENGLISH\nFRANÇAIS · PORTUGUÊS · ITALIANO")
+			main.promo_card(I18n.t("app.title"),
+					I18n.t("promo.made_by") + "\n\n"
+					+ I18n.t("promo.tagline") + "\n\n"
+					+ I18n.t("promo.built") + "\n\n"
+					+ I18n.t("promo.langs"))
 
 
 func _promo_play(index: int, at: float, madness: float) -> void:

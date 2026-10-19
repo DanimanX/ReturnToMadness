@@ -1,13 +1,23 @@
 #!/usr/bin/env bash
 # Graba y monta el video promocional.
-#   bash tools/gen_promo.sh
+#   bash tools/gen_promo.sh              # español
+#   LANG_CODE=en bash tools/gen_promo.sh # inglés
 # Requisitos: Godot 4.7 (GODOT=/ruta/al/binario), ffmpeg, python3.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 GODOT="${GODOT:-/tmp/godot/Godot_v4.7.2-stable_linux.x86_64}"
-WORK="${WORK:-/tmp/promo}"
-OUT="$ROOT/promo/regreso-a-la-locura-promo.mp4"
+LANG_CODE="${LANG_CODE:-es}"
+case "$LANG_CODE" in
+  es) OUT_NAME="regreso-a-la-locura-promo.mp4" ;;
+  en) OUT_NAME="return-to-madness-promo.mp4" ;;
+  fr) OUT_NAME="retour-a-la-folie-promo.mp4" ;;
+  pt) OUT_NAME="regresso-a-loucura-promo.mp4" ;;
+  it) OUT_NAME="ritorno-alla-follia-promo.mp4" ;;
+  *)  OUT_NAME="promo-$LANG_CODE.mp4" ;;
+esac
+WORK="${WORK:-/tmp/promo-$LANG_CODE}"
+OUT="$ROOT/promo/$OUT_NAME"
 
 mkdir -p "$WORK/frames" "$(dirname "$OUT")"
 rm -f "$WORK"/frames/*.png "$WORK"/beat_*.log
@@ -19,7 +29,7 @@ sed -i -E 's|^(window/size/window_width_override)=.*|\1=0|;
            s|^(window/size/window_height_override)=.*|\1=0|' "$ROOT/project.godot"
 
 "$GODOT" --path "$ROOT" --write-movie "$WORK/frames/f.png" --fixed-fps 30 \
-         -- --smoke --promo 2>&1 | tee "$WORK/beat_times.log" | grep -E "promo|frames" || true
+         -- --smoke --promo --lang="$LANG_CODE" 2>&1 | tee "$WORK/beat_times.log" | grep -E "promo|frames" || true
 
 cp "$WORK/project.godot.bak" "$ROOT/project.godot"
 trap - EXIT
