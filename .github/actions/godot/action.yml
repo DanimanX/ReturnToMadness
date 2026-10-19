@@ -40,14 +40,6 @@ runs:
             ;;
         esac
 
-    - name: Caché
-      uses: actions/cache@v4
-      with:
-        path: |
-          ${{ steps.paths.outputs.cachedir }}
-          ${{ steps.paths.outputs.templates }}
-        key: godot-${{ inputs.version }}-${{ inputs.channel }}-${{ runner.os }}-v2
-
     - name: Descargar editor
       shell: bash
       run: |
@@ -62,7 +54,7 @@ runs:
         fi
         url="https://github.com/godotengine/godot/releases/download/${version}-${channel}/Godot_v${version}-${channel}_${archive}.zip"
         echo "descargando $url"
-        curl -fsSL -o "$RUNNER_TEMP/godot.zip" "$url"
+        curl -fsSL --retry 3 --max-time 900 -o "$RUNNER_TEMP/godot.zip" "$url"
         rm -rf "$RUNNER_TEMP/godot-editor"
         mkdir -p "$RUNNER_TEMP/godot-editor"
         unzip -q "$RUNNER_TEMP/godot.zip" -d "$RUNNER_TEMP/godot-editor"
@@ -77,7 +69,7 @@ runs:
           cp "$found" "$editor"
         fi
         chmod +x "$editor"
-        "$editor" --version
+        "$editor" --version --headless
 
     - name: Descargar plantillas de exportación
       shell: bash
@@ -92,7 +84,7 @@ runs:
         fi
         url="https://github.com/godotengine/godot/releases/download/${version}-${channel}/Godot_v${version}-${channel}_export_templates.tpz"
         echo "descargando $url"
-        curl -fsSL -o "$RUNNER_TEMP/templates.tpz" "$url"
+        curl -fsSL --retry 3 --max-time 900 -o "$RUNNER_TEMP/templates.tpz" "$url"
         rm -rf "$RUNNER_TEMP/tpl"
         mkdir -p "$RUNNER_TEMP/tpl"
         unzip -q "$RUNNER_TEMP/templates.tpz" -d "$RUNNER_TEMP/tpl"
@@ -115,7 +107,7 @@ runs:
         fi
         printf '%s\n' "$bin" >> "$GITHUB_PATH"
         if [ -f "$bin/godot.exe" ]; then
-          "$bin/godot.exe" --version
+          "$bin/godot.exe" --version --headless
         else
-          "$bin/godot" --version
+          "$bin/godot" --version --headless
         fi
