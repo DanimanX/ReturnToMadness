@@ -1,0 +1,64 @@
+name: Publish web build
+
+# Publica el build web en GitHub Pages para que se pueda jugar sin descargar nada.
+#
+# IMPORTANTE: no se ejecuta solo. Hay que lanzarlo a mano desde la pestaña
+# Actions ("Run workflow") y tener Pages activado en Settings > Pages con
+# "Source: GitHub Actions".
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+env:
+  GODOT_VERSION: "4.7.2"
+  GODOT_CHANNEL: "stable"
+
+jobs:
+  build:
+    name: Exportar web
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Instalar Godot
+        uses: ./.github/actions/godot
+        with:
+          version: ${{ env.GODOT_VERSION }}
+          channel: ${{ env.GODOT_CHANNEL }}
+
+      - name: Exportar y empaquetar
+        env:
+          GODOT: godot
+        run: bash tools/gen_web_bundle.sh
+
+      - name: Comprobar el shell web
+        run: |
+          grep -q "fileProtocolNotice" build/web/index.html
+          echo "shell web con diagnóstico: ok"
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: build/web
+
+  deploy:
+    name: Desplegar
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

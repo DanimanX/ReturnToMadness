@@ -82,19 +82,23 @@ jobs:
             build/linux/regreso-a-la-locura.x86_64
           test -s build/linux/regreso-a-la-locura.x86_64
 
-      - name: Exportar Web
-        run: |
-          mkdir -p build/web
-          godot --headless --path . --export-release "Web" build/web/index.html
-          test -s build/web/index.html
-          test -s build/web/index.pck
-
-      - name: Empaquetar
+      - name: Empaquetar Linux
         run: |
           cd build/linux
           zip -q -9 ../regreso-a-la-locura-linux.zip regreso-a-la-locura.x86_64
-          cd ../web
-          zip -q -9 ../regreso-a-la-locura-web.zip ./*
+
+      - name: Exportar y empaquetar Web
+        env:
+          GODOT: godot
+        run: bash tools/gen_web_bundle.sh
+
+      - name: Comprobar el shell web
+        run: |
+          # el shell propio debe avisar al abrir el juego con file://
+          grep -q "fileProtocolNotice" build/web/index.html
+          test -s build/web/serve.py
+          test -s build/web/START-HERE.txt
+          echo "shell web con diagnóstico: ok"
 
       - uses: actions/upload-artifact@v4
         with:

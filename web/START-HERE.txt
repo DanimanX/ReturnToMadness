@@ -1,0 +1,47 @@
+REGRESO A LA LOCURA — Return to Madness
+=======================================
+
+Este es el build para navegador. NO abras index.html con doble clic.
+This is the browser build. DO NOT double-click index.html.
+
+Por qué / Why
+-------------
+Los navegadores bloquean que una página abierta como file:// lea los archivos
+del juego (index.wasm, index.pck) y lo muestran como "network error".
+Browsers block a file:// page from reading the game files and report it as a
+"network error". The game must be served over HTTP.
+
+Cómo jugar / How to play
+------------------------
+Opción 1 (recomendada). Con Python instalado:
+
+    python3 serve.py
+
+Se abre el navegador solo. Si no, visita http://localhost:8000/
+
+Opción 2. Con cualquier servidor estático:
+
+    python3 -m http.server 8000     # luego abre http://localhost:8000/
+    npx serve .                     # si tienes Node
+    php -S localhost:8000           # si tienes PHP
+
+Controles / Controls
+--------------------
+A / D          mover / move
+Espacio        saltar / jump      (Space)
+J              golpear / strike
+K              esquivar / dodge
+L              La Voz / The Voice
+Esc            pausa / pause
+← →            idioma / language
+
+Idiomas / Languages
+-------------------
+Español · English · Français · Português · Italiano
+
+Requisitos / Requirements
+-------------------------
+Navegador con WebGL 2 (Chrome, Firefox, Edge, Safari recientes).
+Un navegador con WebGL 2. Se recomienda pantalla completa (F11).
+
+Un juego de DanimanX.

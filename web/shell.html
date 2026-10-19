@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
+		<title>$GODOT_PROJECT_NAME</title>
+		<style>
+html, body, #canvas {
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+
+body {
+	color: #cfc8b4;
+	background-color: #0b0a0f;
+	overflow: hidden;
+	touch-action: none;
+	font-family: ui-monospace, "SFMono-Regular", "Cascadia Mono", Menlo, Consolas, monospace;
+}
+
+#canvas {
+	display: block;
+}
+
+#canvas:focus {
+	outline: none;
+}
+
+#status {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 1.25rem;
+	padding: 1.5rem;
+	box-sizing: border-box;
+	text-align: center;
+}
+
+#status-splash {
+	max-width: 70vw;
+	max-height: 40vh;
+	image-rendering: pixelated;
+}
+
+#status-title {
+	font-size: clamp(1.1rem, 3.2vw, 2rem);
+	letter-spacing: 0.22em;
+	color: #e2af5c;
+	text-transform: uppercase;
+}
+
+#status-bar {
+	width: min(26rem, 80vw);
+	height: 0.55rem;
+	background: #1b1822;
+	border: 1px solid #2e2937;
+	overflow: hidden;
+}
+
+#status-fill {
+	height: 100%;
+	width: 0;
+	background: linear-gradient(90deg, #6f5a2a, #e2af5c);
+	transition: width 0.18s linear;
+}
+
+#status-label {
+	font-size: 0.8rem;
+	letter-spacing: 0.18em;
+	color: #8a8371;
+	min-height: 1em;
+}
+
+#status-notice {
+	display: none;
+	max-width: 46rem;
+	max-height: 78vh;
+	overflow: auto;
+	text-align: left;
+	background: #14111a;
+	border: 1px solid #4a2b2f;
+	border-left: 3px solid #a8362a;
+	padding: 1.1rem 1.3rem;
+	line-height: 1.55;
+	font-size: 0.92rem;
+}
+
+#status-notice h2 {
+	margin: 0 0 0.6rem;
+	font-size: 1rem;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	color: #d2695c;
+}
+
+#status-notice p { margin: 0.5rem 0; }
+#status-notice code, #status-notice pre {
+	background: #0b0a0f;
+	border: 1px solid #2e2937;
+	padding: 0.1rem 0.35rem;
+	color: #d8cfb4;
+}
+#status-notice pre {
+	display: block;
+	padding: 0.7rem 0.8rem;
+	margin: 0.5rem 0;
+	overflow-x: auto;
+	white-space: pre;
+}
+#status-notice .dim { color: #8a8371; }
+#status-notice .files { color: #c9a86a; }
+		</style>
+		$GODOT_HEAD_INCLUDE
+	</head>
+	<body>
+		<canvas id="canvas">
+			Your browser does not support the canvas tag.
+		</canvas>
+
+		<noscript>
+			This game needs JavaScript to run. / Este juego necesita JavaScript.
+		</noscript>
+
+		<div id="status">
+			<img id="status-splash" class="$GODOT_SPLASH_CLASSES" src="$GODOT_SPLASH" alt="">
+			<div id="status-title">$GODOT_PROJECT_NAME</div>
+			<div id="status-bar"><div id="status-fill"></div></div>
+			<div id="status-label">loading…</div>
+			<div id="status-notice"></div>
+		</div>
+
+		<script src="$GODOT_URL"></script>
+		<script>
+const GODOT_CONFIG = $GODOT_CONFIG;
+const GODOT_THREADS_ENABLED = $GODOT_THREADS_ENABLED;
+const engine = new Engine(GODOT_CONFIG);
+
+// ---------------------------------------------------------------- mensajes
+// Cinco idiomas, elegidos por el idioma del navegador. Esto se muestra antes
+// de que arranque el motor, así que no puede usar el sistema del juego.
+const TEXT = {
+	es: {
+		loading: 'cargando…',
+		title: 'NO SE PUDO CARGAR EL JUEGO',
+		file: 'Has abierto <code>index.html</code> directamente desde el disco. ' +
+			'Por seguridad, los navegadores no permiten que una página <code>file://</code> ' +
+			'lea los archivos del juego (<code>.wasm</code> y <code>.pck</code>): el navegador lo ' +
+			'bloquea y lo muestra como «error de red».',
+		fix: 'Sirve la carpeta por HTTP. Abre una terminal en esta carpeta y ejecuta:',
+		fix2: 'Luego abre <code>http://localhost:8000</code> en el navegador.',
+		alt: 'También puedes ejecutar <code>serve.py</code> (incluido): abre el navegador solo.',
+		missing: 'El navegador no pudo descargar un archivo del juego.',
+		missingwhy: 'Suele pasar cuando falta el archivo, la carpeta está incompleta o el ' +
+			'servidor devuelve otro contenido (por ejemplo una página de error 404).',
+		features: 'Al navegador le faltan funciones necesarias para ejecutar el juego:'
+	},
+	en: {
+		loading: 'loading…',
+		title: 'THE GAME COULD NOT LOAD',
+		file: 'You opened <code>index.html</code> straight from disk. For safety, browsers do not ' +
+			'let a <code>file://</code> page read the game files (<code>.wasm</code> and ' +
+			'<code>.pck</code>), and report it as a “network error”.',
+		fix: 'Serve the folder over HTTP. Open a terminal in this folder and run:',
+		fix2: 'Then open <code>http://localhost:8000</code> in your browser.',
+		alt: 'You can also run the bundled <code>serve.py</code>, which opens the browser for you.',
+		missing: 'The browser could not download a game file.',
+		missingwhy: 'This usually means the file is missing, the folder is incomplete, or the ' +
+			'server returned something else (for example a 404 error page).',
+		features: 'Your browser is missing features required to run the game:'
+	},
+	fr: {
+		loading: 'chargement…',
+		title: 'LE JEU N’A PAS PU SE CHARGER',
+		file: 'Vous avez ouvert <code>index.html</code> directement depuis le disque. Pour des ' +
+			'raisons de sécurité, un navigateur interdit à une page <code>file://</code> de lire ' +
+			'les fichiers du jeu (<code>.wasm</code> et <code>.pck</code>) : il l’affiche comme ' +
+			'« erreur réseau ».',
+		fix: 'Servez le dossier en HTTP. Ouvrez un terminal dans ce dossier et lancez :',
+		fix2: 'Puis ouvrez <code>http://localhost:8000</code> dans le navigateur.',
+		alt: 'Vous pouvez aussi lancer <code>serve.py</code> (inclus), qui ouvre le navigateur.',
+		missing: 'Le navigateur n’a pas pu télécharger un fichier du jeu.',
+		missingwhy: 'Cela arrive quand le fichier manque, que le dossier est incomplet ou que le ' +
+			'serveur renvoie autre chose (une page d’erreur 404, par exemple).',
+		features: 'Il manque au navigateur des fonctions nécessaires au jeu :'
+	},
+	pt: {
+		loading: 'carregando…',
+		title: 'NÃO FOI POSSÍVEL CARREGAR O JOGO',
+		file: 'Abriste <code>index.html</code> diretamente do disco. Por segurança, os navegadores ' +
+			'não permitem que uma página <code>file://</code> leia os ficheiros do jogo ' +
+			'(<code>.wasm</code> e <code>.pck</code>) e mostram-no como «erro de rede».',
+		fix: 'Serve a pasta por HTTP. Abre um terminal nesta pasta e executa:',
+		fix2: 'Depois abre <code>http://localhost:8000</code> no navegador.',
+		alt: 'Também podes executar o <code>serve.py</code> incluído: abre o navegador sozinho.',
+		missing: 'O navegador não conseguiu descarregar um ficheiro do jogo.',
+		missingwhy: 'Costuma acontecer quando falta o ficheiro, a pasta está incompleta ou o ' +
+			'servidor devolve outra coisa (por exemplo uma página de erro 404).',
+		features: 'Faltam ao navegador funções necessárias para executar o jogo:'
+	},
+	it: {
+		loading: 'caricamento…',
+		title: 'IMPOSSIBILE CARICARE IL GIOCO',
+		file: 'Hai aperto <code>index.html</code> direttamente dal disco. Per sicurezza i browser ' +
+			'non permettono a una pagina <code>file://</code> di leggere i file del gioco ' +
+			'(<code>.wasm</code> e <code>.pck</code>) e lo mostrano come «errore di rete».',
+		fix: 'Servi la cartella via HTTP. Apri un terminale in questa cartella ed esegui:',
+		fix2: 'Poi apri <code>http://localhost:8000</code> nel browser.',
+		alt: 'Puoi anche eseguire <code>serve.py</code> (incluso): apre il browser da solo.',
+		missing: 'Il browser non è riuscito a scaricare un file del gioco.',
+		missingwhy: 'Succede quando il file manca, la cartella è incompleta o il server restituisce ' +
+			'altro (per esempio una pagina di errore 404).',
+		features: 'Al browser mancano funzioni necessarie per eseguire il gioco:'
+	}
+};
+
+const LANG = (navigator.language || 'en').slice(0, 2).toLowerCase();
+const T = TEXT[LANG] || TEXT.en;
+
+const statusOverlay = document.getElementById('status');
+const statusFill = document.getElementById('status-fill');
+const statusLabel = document.getElementById('status-label');
+const statusNotice = document.getElementById('status-notice');
+const statusTitle = document.getElementById('status-title');
+const statusBar = document.getElementById('status-bar');
+const statusSplash = document.getElementById('status-splash');
+
+let initializing = true;
+
+function showNotice(html) {
+	statusTitle.style.display = 'none';
+	statusBar.style.display = 'none';
+	statusSplash.style.display = 'none';
+	statusLabel.style.display = 'none';
+	statusNotice.style.display = 'block';
+	statusNotice.innerHTML = html;
+	initializing = false;
+}
+
+function esc(s) {
+	return String(s).replace(/[&<>"]/g, function (c) {
+		return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+	});
+}
+
+function fileProtocolNotice() {
+	showNotice(
+		'<h2>' + T.title + '</h2>' +
+		'<p>' + T.file + '</p>' +
+		'<p>' + T.fix + '</p>' +
+		'<pre>python3 -m http.server 8000</pre>' +
+		'<p>' + T.fix2 + '</p>' +
+		'<p class="dim">' + T.alt + '</p>'
+	);
+}
+
+function missingFileNotice(names) {
+	showNotice(
+		'<h2>' + T.title + '</h2>' +
+		'<p>' + T.missing + '</p>' +
+		'<p class="files">' + names.map(esc).join('<br>') + '</p>' +
+		'<p>' + T.missingwhy + '</p>' +
+		'<p class="dim">' + T.fix + '</p>' +
+		'<pre>python3 -m http.server 8000</pre>'
+	);
+}
+
+function failureNotice(err) {
+	console.error(err);
+	const msg = (err instanceof Error) ? err.message : String(err);
+	if (/fetch|network|load/i.test(msg)) {
+		missingFileNotice([msg]);
+		return;
+	}
+	showNotice('<h2>' + T.title + '</h2><p>' + esc(msg) + '</p>');
+}
+
+// ---------------------------------------------------------------- arranque
+(async function () {
+	if (location.protocol === 'file:') {
+		fileProtocolNotice();
+		return;
+	}
+
+	// Comprobar los archivos antes de arrancar el motor: si falta uno, el
+	// navegador daría un "network error" genérico y sin pistas.
+	const expected = Object.keys(GODOT_CONFIG.fileSizes || {});
+	const missing = [];
+	for (const name of expected) {
+		try {
+			const res = await fetch(name, { method: 'HEAD', cache: 'no-store' });
+			if (!res.ok) {
+				missing.push(name + ' — HTTP ' + res.status);
+			}
+		} catch (e) {
+			missing.push(name + ' — ' + e.message);
+		}
+	}
+	if (missing.length) {
+		missingFileNotice(missing);
+		return;
+	}
+
+	const features = Engine.getMissingFeatures({ threads: GODOT_THREADS_ENABLED });
+	if (features.length !== 0) {
+		showNotice('<h2>' + T.title + '</h2><p>' + T.features + '</p><pre>' +
+			esc(features.join('\n')) + '</pre>');
+		return;
+	}
+
+	statusLabel.textContent = T.loading;
+	engine.startGame({
+		onProgress: function (current, total) {
+			if (current > 0 && total > 0) {
+				const pct = Math.min(100, Math.round((current / total) * 100));
+				statusFill.style.width = pct + '%';
+				statusLabel.textContent = pct + '%';
+			} else {
+				statusFill.style.width = '100%';
+				statusLabel.textContent = T.loading;
+			}
+		},
+	}).then(function () {
+		statusOverlay.remove();
+		initializing = false;
+	}, failureNotice);
+}());
+		</script>
+	</body>
+</html>
