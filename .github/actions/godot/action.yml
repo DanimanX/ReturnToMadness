@@ -69,7 +69,7 @@ runs:
           cp "$found" "$editor"
         fi
         chmod +x "$editor"
-        "$editor" --version --headless
+        "$editor" --version
 
     - name: Descargar plantillas de exportación
       shell: bash
@@ -106,8 +106,3 @@ runs:
           chmod +x "$bin/godot"
         fi
         printf '%s\n' "$bin" >> "$GITHUB_PATH"
-        if [ -f "$bin/godot.exe" ]; then
-          "$bin/godot.exe" --version --headless
-        else
-          "$bin/godot" --version --headless
-        fi
