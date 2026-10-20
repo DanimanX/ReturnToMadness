@@ -7,6 +7,7 @@ config_version=5
 [application]
 
 config/name="Regreso a la Locura"
+config/version="1.0.1"
 config/description="Action-platformer de horror cósmico. Siete descensos. Una sola cordura."
 run/main_scene="res://scenes/main.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
